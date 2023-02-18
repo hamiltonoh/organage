@@ -11,9 +11,9 @@ class CreateOrganAgeObject:
 
     # init method or constructor
     def __init__(self,
-                 path_scale_dict='data/v4_to_v4.1_scale_dict.json',
-                 path_organ_plist_dict='data/tissue_pproteinlist_5k_dict_gtex_tissue_enriched_fc4_stable_proteins_seqid.json',
-                 path_seed_dict='data/Bootstrap_and_permutation_500_seed_dict.json',
+                 path_scale_dict='v4_to_v4.1_scale_dict.json',
+                 path_organ_plist_dict='tissue_pproteinlist_5k_dict_gtex_tissue_enriched_fc4_stable_proteins_seqid.json',
+                 path_seed_dict='Bootstrap_and_permutation_500_seed_dict.json',
                  path_models_dir='data/ml_models/Covance/Zprot_stableps_perf95/'
                  ):
 
@@ -26,11 +26,11 @@ class CreateOrganAgeObject:
     def load_models(self):
 
         # Seqid:scale_factor dictionary
-        scale_dict = json.load(resources.open_text("organage", self.model_paths["path_scale_dict"]))
+        scale_dict = json.load(resources.open_text("organage.data", self.model_paths["path_scale_dict"]))
 
         # organ:proteinlist dictionary
-        scale_dict = json.load(resources.open_text("organage", self.model_paths["path_organ_plist_dict"]))
+        scale_dict = json.load(resources.open_text("organage.data", self.model_paths["path_organ_plist_dict"]))
 
         # 500 bootstrap seed list
-        scale_dict = json.load(resources.open_text("organage", self.model_paths["path_seed_dict"]))
+        scale_dict = json.load(resources.open_text("organage.data", self.model_paths["path_seed_dict"]))
 
