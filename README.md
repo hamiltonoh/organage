@@ -5,7 +5,7 @@ A package to pestimate organ-specific biological age using SomaScan plasma prote
 ## Installation
 
 ```bash
-$ pip install OrganAge
+$ pip install organage
 ```
 
 ## Usage
