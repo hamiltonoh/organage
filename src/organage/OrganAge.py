@@ -17,20 +17,20 @@ class CreateOrganAgeObject:
                  path_models_dir='data/ml_models/Covance/Zprot_stableps_perf95/'
                  ):
 
-        self.model_paths = {"path_scale_dict":path_scale_dict,
-                          "path_organ_plist_dict":path_organ_plist_dict,
-                          "path_seed_dict":path_seed_dict,
-                          "path_models_dir":path_models_dir}
+        self.model_paths = {"path_scale_dict": path_scale_dict,
+                            "path_organ_plist_dict": path_organ_plist_dict,
+                            "path_seed_dict": path_seed_dict,
+                            "path_models_dir": path_models_dir}
         self.load_models()
 
     def load_models(self):
 
         # Seqid:scale_factor dictionary
-        scale_dict = json.load(resources.open_text("organage.data", self.model_paths["path_scale_dict"]))
+        scale_dict = json.load(resources.open_text("organage", self.model_paths["path_scale_dict"]))
 
         # organ:proteinlist dictionary
-        scale_dict = json.load(resources.open_text("organage.data", self.model_paths["path_organ_plist_dict"]))
+        scale_dict = json.load(resources.open_text("organage", self.model_paths["path_organ_plist_dict"]))
 
         # 500 bootstrap seed list
-        scale_dict = json.load(resources.open_text("organage.data", self.model_paths["path_seed_dict"]))
+        scale_dict = json.load(resources.open_text("organage", self.model_paths["path_seed_dict"]))
 
