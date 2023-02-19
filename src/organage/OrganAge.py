@@ -73,12 +73,81 @@ class CreateOrganAgeObject:
         self.df_prot = df_prot
 
 
-    def normalize(self, assay_version="v4.1"):
+    def normalize(self, assay_version):
         # normalizing protein levels
         df_prot_norm = self.df_prot.copy()
         if assay_version == "v4":
             for prot in df_prot_norm.columns:
-                df_prot_norm[prot] = df_prot_norm[prot] * self.scale_dict[prot]
+                df_prot_norm[prot] = df_prot_norm[prot] * self.version_scale_factors[prot]
+
         # log
         df_prot_norm = np.log10(df_prot_norm)
         self.df_prot_norm = df_prot_norm
+
+        def calculate_organ_ages(self):
+            # Predict organ age and calculate age gaps. store results in dataframe
+            resall = []
+            for organ, plist in self.organ_plist_dict.items():
+                dfres = self.calculate_one_organ_age(organ, plist)
+                resall.append(dfres)
+            dfres_all = pd.concat(resall)
+            self.results = dfres_all
+            return dfres_all
+
+        def calculate_one_organ_age(self, organ, plist):
+            df_input = self.setup_input_dataframe(organ, plist)
+            predicted_age = self.predict_bootstrap_aggregated_age(df_input, organ)
+
+            # store results in dataframe
+            dfres = self.md_hot.copy()
+            dfres["Predicted_Age"] = predicted_age
+
+            self.calculate_lowess_yhat_and_agegap(dfres, organ)
+            self.zscore_agegaps(dfres, organ)
+            dfres["Organ"] = organ
+            return dfres
+
+        def setup_input_dataframe(self, organ, plist):
+            # sort df_prot to match md_hot and subset to organ-specific proteins
+            df_prot_organ = self.df_prot_norm.loc[self.md_hot.index, plist]
+
+            # zscore expression
+            prot_scaler = self.models_dict[organ]["prot_scaler"]
+            np_prot_organ_z = prot_scaler.transform(df_prot_organ)
+            df_prot_organ_z = pd.DataFrame(np_prot_organ_z, index=df_prot_organ.index, columns=df_prot_organ.columns)
+
+            # add sex to create df_input
+            df_input = pd.concat([self.md_hot[["Sex_F"]], df_prot_organ_z], axis=1)
+            return df_input
+
+        def predict_bootstrap_aggregated_age(self, df_input, organ):
+            # predict age across all bootstraps
+            predicted_ages_all_seeds = []
+            for aging_model in self.models_dict[organ]['aging_models']:
+                predicted_ages_seed = aging_model.predict(df_input.to_numpy())
+                predicted_ages_all_seeds.append(predicted_ages_seed)
+
+            # take mean of predicted ages
+            predicted_ages = np.mean(predicted_ages_all_seeds, axis=0)
+            return predicted_ages
+
+        def calculate_lowess_yhat_and_agegap(self, dfres, organ):
+            # calculate agegap using lowess of predicted vs chronological age from training cohort
+            age_prediction_lowess = self.models_dict[organ]['age_prediction_lowess']
+            dfres["yhat_lowess"] = age_prediction_lowess(np.array(dfres.Age))
+            if len(dfres.loc[dfres.yhat_lowess.isna()]) > 0:
+                print("Could not predict lowess yhat in " + str(len(dfres.loc[dfres.yhat_lowess.isna()])) + " samples")
+                dfres = dfres.dropna(subset="yhat_lowess")
+            dfres["AgeGap"] = dfres["Predicted_Age"] - dfres["yhat_lowess"]
+
+        def zscore_agegaps(self, dfres, organ):
+            # zscore age gaps using scaler defined from training cohort
+            agegap_scaler = self.models_dict[organ]["agegap_scaler"]
+            dfres["AgeGap_zscored"] = agegap_scaler.transform(dfres[["AgeGap"]].to_numpy()).flatten()
+            dfres["AgeGap_zscored"] = dfres["AgeGap_zscored"] - agegap_scaler.transform([[0]]).flatten()[0]
+
+
+
+
+
+
