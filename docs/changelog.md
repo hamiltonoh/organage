@@ -3,7 +3,10 @@
 
 # Changelog
 
-<!--next-version-placeholder-->
+
+## v0.2.0 (02/19/23)
+
+- Added 'estimate_organ_ages' function and dependent sub-functions within OrganAge class
 
 ## v0.1.1 (02/18/23)
 
