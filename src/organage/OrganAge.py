@@ -69,6 +69,7 @@ class CreateOrganAgeObject:
 
 
     def add_data(self, md_hot, df_prot):
+
         # to select subset with both sex and protein info
         tmp = pd.concat([md_hot, df_prot], axis=1).dropna()
         if len(tmp) < len(md_hot):
@@ -76,13 +77,15 @@ class CreateOrganAgeObject:
         self.md_hot = md_hot.loc[tmp.index]
         self.df_prot = df_prot.loc[tmp.index]
 
+        # check that all proteins required by models are in df_prot
         model_proteins = [prot for prot in self.organ_plist_dict["Organismal"]]
-
         for prot in model_proteins:
             if not prot in list(df_prot.columns):
                 warnings.warn('An aging model protein is missing in your data')
 
+
     def normalize(self, assay_version):
+
         # normalizing protein levels
         df_prot_norm = self.df_prot.copy()
         if assay_version == "v4":
@@ -90,8 +93,11 @@ class CreateOrganAgeObject:
                 df_prot_norm[prot] = df_prot_norm[prot] * self.version_scale_factors[prot]
         if assay_version == "v4.1":
             pass
-        if df_prot_norm.to_numpy().mean() < 100:
+
+        # warning if protein distribution seems odd
+        if df_prot_norm.to_numpy().mean() < 500:
             warnings.warn("Your protein expression values seem to be logged/transformed. Make sure to input raw protein expression values in RFU units")
+
         # log
         df_prot_norm = np.log10(df_prot_norm)
         self.df_prot_norm = df_prot_norm
@@ -102,12 +108,14 @@ class CreateOrganAgeObject:
         resall = []
         for organ, plist in self.organ_plist_dict.items():
 
+            # only run if all model proteins available
             nmissing = 0
             for prot in plist:
                 if not prot in list(self.df_prot_norm.columns):
                     nmissing += 1
 
             if nmissing==0:
+                print(organ+"...")
                 dfres = self.estimate_one_organ_age(organ, plist)
                 resall.append(dfres)
 
@@ -139,11 +147,13 @@ class CreateOrganAgeObject:
                                        index=df_prot_organ.index,
                                        columns=df_prot_organ.columns)
 
-        # add sex to create df_input
+        # add sex to create df_input for models
         df_input = pd.concat([self.md_hot[["Sex_F"]], df_prot_organ_z], axis=1)
         return df_input
 
+
     def predict_bootstrap_aggregated_age(self, df_input, organ):
+
         # predict age across all bootstraps
         predicted_ages_all_seeds = []
         for aging_model in self.models_dict[organ]['aging_models']:
@@ -154,7 +164,9 @@ class CreateOrganAgeObject:
         predicted_ages = np.mean(predicted_ages_all_seeds, axis=0)
         return predicted_ages
 
+
     def calculate_lowess_yhat_and_agegap(self, dfres, organ):
+
         # calculate agegap using lowess of predicted vs chronological age from training cohort
         age_prediction_lowess = self.models_dict[organ]['age_prediction_lowess']
         dfres["yhat_lowess"] = age_prediction_lowess(np.array(dfres.Age))
@@ -163,7 +175,9 @@ class CreateOrganAgeObject:
             dfres = dfres.dropna(subset="yhat_lowess")
         dfres["AgeGap"] = dfres["Predicted_Age"] - dfres["yhat_lowess"]
 
+
     def zscore_agegaps(self, dfres, organ):
+
         # zscore age gaps using scaler defined from training cohort
         agegap_scaler = self.models_dict[organ]["agegap_scaler"]
         dfres["AgeGap_zscored"] = agegap_scaler.transform(dfres[["AgeGap"]].to_numpy()).flatten()
