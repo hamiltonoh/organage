@@ -24,6 +24,7 @@ class CreateOrganAgeObject:
         self.load_data_and_models()
         del self.data_and_model_paths
 
+
     def load_data_and_models(self):
 
         # Seqid:scale_factor dictionary
@@ -64,3 +65,20 @@ class CreateOrganAgeObject:
 
         # save to object
         self.models_dict = models_dict
+
+
+    def add_data(self, md_hot, df_prot):
+        # user inputs sample metadata and sample expression dataframes
+        self.md_hot = md_hot
+        self.df_prot = df_prot
+
+
+    def normalize(self, assay_version="v4.1"):
+        # normalizing protein levels
+        df_prot_norm = self.df_prot.copy()
+        if assay_version == "v4":
+            for prot in df_prot_norm.columns:
+                df_prot_norm[prot] = df_prot_norm[prot] * self.scale_dict[prot]
+        # log
+        df_prot_norm = np.log10(df_prot_norm)
+        self.df_prot_norm = df_prot_norm
