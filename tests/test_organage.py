@@ -11,5 +11,5 @@ def test_OrganAge():
     data.normalize(assay_version="v4.1")
 
     dfres = data.estimate_organ_ages()
-
-
+    return dfres
+dfres
