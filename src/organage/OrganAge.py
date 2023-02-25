@@ -58,7 +58,7 @@ class CreateOrganAgeObject:
                 norm = "Zprot_stableps_perf95_fiba"
                 organ_plist_dict = organ_plist_dict2
 
-
+            # load all models
             for organ in organ_plist_dict:
                 models_dict[organ] = {}
                 models_dict[organ]["aging_models"] = []
@@ -157,8 +157,8 @@ class CreateOrganAgeObject:
         # store results in dataframe
         dfres = self.md_hot.copy()
         dfres["Predicted_Age"] = predicted_age
-        self.calculate_lowess_yhat_and_agegap(dfres, organ)
-        self.zscore_agegaps(dfres, organ)
+        dfres = self.calculate_lowess_yhat_and_agegap(dfres, organ)
+        dfres = self.zscore_agegaps(dfres, organ)
         dfres["Organ"] = organ
         return dfres
 
@@ -192,23 +192,27 @@ class CreateOrganAgeObject:
 
 
     def calculate_lowess_yhat_and_agegap(self, dfres, organ):
+        dfres_agegap = dfres.copy()
 
         # calculate agegap using lowess of predicted vs chronological age from training cohort
         age_prediction_lowess = self.models_dict[organ]['age_prediction_lowess']
-        dfres["yhat_lowess"] = age_prediction_lowess(np.array(dfres.Age))
-        if len(dfres.loc[dfres.yhat_lowess.isna()]) > 0:
-            print("Could not predict lowess yhat in " + str(len(dfres.loc[dfres.yhat_lowess.isna()])) + " samples")
-            dfres = dfres.dropna(subset="yhat_lowess")
-        dfres["AgeGap"] = dfres["Predicted_Age"] - dfres["yhat_lowess"]
+        dfres_agegap["yhat_lowess"] = age_prediction_lowess(np.array(dfres_agegap.Age))
+
+        if len(dfres_agegap.loc[dfres_agegap.yhat_lowess.isna()]) > 0:
+            print("Could not predict lowess yhat in " + str(len(dfres_agegap.loc[dfres_agegap.yhat_lowess.isna()])) + " samples")
+            dfres_agegap = dfres_agegap.dropna(subset="yhat_lowess")
+
+        dfres_agegap["AgeGap"] = dfres_agegap["Predicted_Age"] - dfres_agegap["yhat_lowess"]
+        return dfres_agegap
 
 
     def zscore_agegaps(self, dfres, organ):
-
+        dfres_agegap_z = dfres.copy()
         # zscore age gaps using scaler defined from training cohort
         agegap_scaler = self.models_dict[organ]["agegap_scaler"]
-        dfres["AgeGap_zscored"] = agegap_scaler.transform(dfres[["AgeGap"]].to_numpy()).flatten()
-        dfres["AgeGap_zscored"] = dfres["AgeGap_zscored"] - agegap_scaler.transform([[0]]).flatten()[0]
-
+        dfres_agegap_z["AgeGap_zscored"] = agegap_scaler.transform(dfres_agegap_z[["AgeGap"]].to_numpy()).flatten()
+        dfres_agegap_z["AgeGap_zscored"] = dfres_agegap_z["AgeGap_zscored"] - agegap_scaler.transform([[0]]).flatten()[0]
+        return dfres_agegap_z
 
 
 
