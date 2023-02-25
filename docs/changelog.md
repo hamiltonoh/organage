@@ -3,6 +3,11 @@
 
 # Changelog
 
+
+## v0.3.4 (02/25/23)
+
+- Fixed bugs
+
 ## v0.3.0 (02/25/23)
 
 - Added 'DementiaBrain' model prediction outputs
