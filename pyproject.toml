@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "organage"
-version = "0.2.0"
+version = "0.3.0"
 description = "A package to pestimate organ-specific biological age using SomaScan plasma proteomics data"
 authors = ["Hamilton Oh"]
 license = "MIT"

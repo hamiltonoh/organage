@@ -1,6 +1,6 @@
 # organage
 
-A package to pestimate organ-specific biological age using SomaScan plasma proteomics data
+A package to estimate organ-specific biological age using SomaScan plasma proteomics data
 
 ## Installation
 
@@ -10,11 +10,7 @@ $ pip install organage
 
 ## Usage
 
-- TODO
-
-## Contributing
-
-Interested in contributing? Check out the contributing guidelines. Please note that this project is released with a Code of Conduct. By contributing to this project, you agree to abide by its terms.
+- see example
 
 ## License
 
