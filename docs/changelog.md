@@ -4,6 +4,11 @@
 # Changelog
 
 
+
+## v0.4.0 (03/26/23)
+
+- Updated models
+
 ## v0.3.4 (02/25/23)
 
 - Fixed bugs
