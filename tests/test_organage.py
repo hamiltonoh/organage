@@ -12,4 +12,3 @@ def test_OrganAge():
 
     dfres = data.estimate_organ_ages()
     return dfres
-
