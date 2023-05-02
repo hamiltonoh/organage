@@ -4,6 +4,9 @@
 # Changelog
 
 
+## v0.4.1 (05/1/23)
+
+- Renamed DementiaModels to CognitionModels
 
 ## v0.4.0 (03/26/23)
 
