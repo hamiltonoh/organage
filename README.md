@@ -2,8 +2,19 @@
 
 A package to estimate organ-specific biological age using SomaScan plasma proteomics data
 
-## Dependencies
+## System requirements
 
+### Hardware requirements
+organage package requires only a standard computer with enough RAM to support the in-memory operations.
+
+### Software requirements
+
+#### OS Requirements
+This package is supported for macOS and Linux. The package has been tested on the following systems:
+- maxOS 11.7.1
+- Linux: CentOS 7.x
+
+#### Python dependencies
 - python>=3.9
 - dill>=0.3.6
 - pandas>=1.5.3
