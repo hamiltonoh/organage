@@ -2,6 +2,10 @@
 
 A package to estimate organ-specific biological age using SomaScan plasma proteomics data
 
+## Dependencies
+
+
+
 ## Installation
 
 ```bash
@@ -10,7 +14,7 @@ $ pip install organage
 
 ## Usage
 
-- see example
+- see docs/example.ipynb
 
 ## License
 
