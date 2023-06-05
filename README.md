@@ -4,10 +4,10 @@ A package to estimate organ-specific biological age using SomaScan plasma proteo
 
 ## Dependencies
 
-python = ">=3.9"
-dill = ">=0.3.6"
-pandas = ">=1.5.3"
-scikit-learn = "1.0.2"   aging models trained using this specific version of scikit-learn
+- python = ">=3.9"
+- dill = ">=0.3.6"
+- pandas = ">=1.5.3"
+- scikit-learn = "1.0.2"   aging models trained using this specific version of scikit-learn
 
 ## Installation
 
