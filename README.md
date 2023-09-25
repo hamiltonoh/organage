@@ -18,7 +18,7 @@ This package is supported for macOS and Linux. The package has been tested on th
 
 #### Python dependencies
 
-- python>=3.9
+- python>=3.9 and <=3.10
 - dill>=0.3.6
 - pandas>=1.5.3
 - scikit-learn==1.0.2. aging models were trained using this specific version of scikit-learn
