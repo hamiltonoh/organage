@@ -3,6 +3,9 @@
 
 # Changelog
 
+## v0.5.0
+
+- Updated example, renamed "Control" model to "Conventional"
 
 ## v0.4.1 (05/1/23)
 
