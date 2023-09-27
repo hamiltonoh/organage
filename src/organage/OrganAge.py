@@ -12,14 +12,14 @@ class CreateOrganAgeObject:
     # init method or constructor
     def __init__(self,
                  path_version_scale_factors='v4_to_v4.1_scale_dict.json',
-                 path_organ_plist_dict='tissue_pproteinlist_5k_dict_gtex_tissue_enriched_fc4_stable_assay_proteins_seqid.json',
-                 path_organ_plist_dict_fiba='tissue_pproteinlist_5k_dict_dementia_optimized_WUADRC_WUADRC_trained_stableassayps_seqid.json',
+                 path_organ_plist_dict1='tissue_pproteinlist_5k_dict_gtex_tissue_enriched_fc4_stable_assay_proteins_seqid.json',
+                 path_organ_plist_dict2='tissue_pproteinlist_5k_dict_dementia_optimized_WUADRC_WUADRC_trained_stableassayps_seqid.json',
                  path_bootstrap_seeds='Bootstrap_and_permutation_500_seed_dict.json',
                  ):
 
         self.data_and_model_paths = {"path_version_scale_factors": path_version_scale_factors,
-                                     "path_organ_plist_dict": path_organ_plist_dict,
-                                     "path_organ_plist_dict_fiba": path_organ_plist_dict_fiba,
+                                     "path_organ_plist_dict1": path_organ_plist_dict1,
+                                     "path_organ_plist_dict2": path_organ_plist_dict2,
                                      "path_bootstrap_seeds": path_bootstrap_seeds,
                                      }
         self.load_data_and_models()
@@ -33,20 +33,20 @@ class CreateOrganAgeObject:
         self.version_scale_factors = version_scale_factors
 
         # organ:proteinlist dictionary
-        organ_plist_dict = json.load(resources.open_text("organage.data",
-                                                         self.data_and_model_paths["path_organ_plist_dict"]))
-        organ_plist_dict_fiba = json.load(resources.open_text("organage.data",
-                                                              self.data_and_model_paths["path_organ_plist_dict_fiba"]))
-        self.organ_plist_dict = organ_plist_dict
-        self.organ_plist_dict_fiba = organ_plist_dict_fiba
+        organ_plist_dict1 = json.load(resources.open_text("organage.data",
+                                                         self.data_and_model_paths["path_organ_plist_dict1"]))
+        organ_plist_dict2 = json.load(resources.open_text("organage.data",
+                                                              self.data_and_model_paths["path_organ_plist_dict2"]))
+        self.organ_plist_dict1 = organ_plist_dict1
+        self.organ_plist_dict2 = organ_plist_dict2
 
         # 500 bootstrapped models
         bootstrap_seeds = json.load(resources.open_text("organage.data", self.data_and_model_paths["path_bootstrap_seeds"]))["BS_Seed"]
         models_dict = {}
 
-        # load organ aging models and dementia organ aging models
+        # load organ aging models and cognition organ aging models
         model_norms = ["Zprot_stableassayps_perf95", "Zprot_stableassayps_perf95_fiba"]
-        plist_dicts = [organ_plist_dict, organ_plist_dict_fiba]
+        plist_dicts = [organ_plist_dict1, organ_plist_dict2]
 
         for i in range(len(model_norms)):
 
@@ -82,11 +82,11 @@ class CreateOrganAgeObject:
         # save to object
         self.models_dict = models_dict
 
-        organ_plist_dict_final = organ_plist_dict.copy()
-        organ_plist_dict_final.update(organ_plist_dict_fiba)
-        del self.organ_plist_dict
-        del self.organ_plist_dict_fiba
-        self.organ_plist_dict = organ_plist_dict_final
+        organ_plist_dict = organ_plist_dict1.copy()
+        organ_plist_dict.update(organ_plist_dict2)
+        self.organ_plist_dict = organ_plist_dict
+        del self.organ_plist_dict1
+        del self.organ_plist_dict2
 
 
 
