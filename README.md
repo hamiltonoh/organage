@@ -1,6 +1,6 @@
 # organage
 
-A package to estimate organ-specific biological age using using aging models from Oh and Rutledge et al. _Nature_ 2023 trained on SomaScan plasma proteomics data. 
+A package to estimate organ-specific biological age using aging models trained on SomaScan plasma proteomics data (Oh and Rutledge et al. _Nature_ 2023)  
 
 ## System requirements
 
