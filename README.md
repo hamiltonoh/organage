@@ -1,6 +1,6 @@
 # organage
 
-A package to estimate organ-specific biological age using aging models trained on SomaScan plasma proteomics data (Oh and Rutledge et al. _Nature_ 2023)  
+A package to estimate organ-specific biological age using aging models trained on SomaScan plasma proteomics data (Oh and Rutledge et al. _Nature_ 2023 https://doi.org/10.1038/s41586-023-06802-1)  
 
 ## System requirements
 
@@ -31,7 +31,7 @@ $ pip install organage
 
 ## Usage
 
-- see docs/example.ipynb
+- see docs/Predict organage example.ipynb
 
 ## License
 
