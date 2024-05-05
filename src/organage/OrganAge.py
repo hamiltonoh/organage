@@ -11,13 +11,15 @@ class CreateOrganAgeObject:
 
     # init method or constructor
     def __init__(self,
-                 path_version_scale_factors='v4_to_v4.1_scale_dict.json',
+                 path_version_scale_factors_v4='v4_to_v4.1_scale_dict.json',
+                 path_version_scale_factors_v5='v5_to_v4.1_scale_dict.json',
                  path_organ_plist_dict1='tissue_pproteinlist_5k_dict_gtex_tissue_enriched_fc4_stable_assay_proteins_seqid.json',
                  path_organ_plist_dict2='tissue_pproteinlist_5k_dict_dementia_optimized_WUADRC_WUADRC_trained_stableassayps_seqid.json',
                  path_bootstrap_seeds='Bootstrap_and_permutation_500_seed_dict.json',
                  ):
 
-        self.data_and_model_paths = {"path_version_scale_factors": path_version_scale_factors,
+        self.data_and_model_paths = {"path_version_scale_factors_v4": path_version_scale_factors_v4,
+                                     "path_version_scale_factors_v5": path_version_scale_factors_v5,
                                      "path_organ_plist_dict1": path_organ_plist_dict1,
                                      "path_organ_plist_dict2": path_organ_plist_dict2,
                                      "path_bootstrap_seeds": path_bootstrap_seeds,
@@ -29,8 +31,10 @@ class CreateOrganAgeObject:
     def load_data_and_models(self):
 
         # Seqid:scale_factor dictionary
-        version_scale_factors = json.load(resources.open_text("organage.data", self.data_and_model_paths["path_version_scale_factors"]))
-        self.version_scale_factors = version_scale_factors
+        version_scale_factors_v4 = json.load(resources.open_text("organage.data", self.data_and_model_paths["path_version_scale_factors_v4"]))
+        self.version_scale_factors_v4 = version_scale_factors_v4
+        version_scale_factors_v5 = json.load(resources.open_text("organage.data", self.data_and_model_paths["path_version_scale_factors_v5"]))
+        self.version_scale_factors_v5 = version_scale_factors_v5
 
         # organ:proteinlist dictionary
         organ_plist_dict1 = json.load(resources.open_text("organage.data",
@@ -112,7 +116,10 @@ class CreateOrganAgeObject:
         df_prot_norm = self.df_prot.copy()
         if assay_version == "v4":
             for prot in df_prot_norm.columns:
-                df_prot_norm[prot] = df_prot_norm[prot] * self.version_scale_factors[prot]
+                df_prot_norm[prot] = df_prot_norm[prot] * self.version_scale_factors_v4[prot]
+        if assay_version == "v5":
+            for prot in df_prot_norm.columns:
+                df_prot_norm[prot] = df_prot_norm[prot] * self.version_scale_factors_v5[prot]
         if assay_version == "v4.1":
             pass
 
