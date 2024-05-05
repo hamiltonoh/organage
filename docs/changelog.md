@@ -3,6 +3,10 @@
 
 # Changelog
 
+## v1.0.0
+
+- scale factors for v5 (11k) -> v4.1 (7k)
+
 ## v0.5.1 and v0.5.2
 
 - bug fixes
